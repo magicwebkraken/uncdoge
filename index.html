@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>unc doge - $uncdoge</title>
+<link rel="icon" href="/meta-images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Sniglet:wght@400;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff4c9;
+    --bg-2: #ffe0ec;
+    --bg-3: #d8f2ff;
+    --bg-4: #e8f7c8;
+    --ink: #151515;
+    --green: #8ed36a;
+    --green-2: #6cbf4a;
+    --green-dark: #235a10;
+    --pink: #ff94b6;
+    --pink-2: #ff6b95;
+    --blue: #8fd8ee;
+    --blue-2: #5ec3e0;
+    --cream: #fffaea;
+    --yellow: #ffcc3d;
+    --orange: #ff9d3d;
+    --lilac: #caa8ff;
+    --shadow: 6px 6px 0 var(--ink);
+    --shadow-lg: 10px 10px 0 var(--ink);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Paper grain + scatter dots */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(circle at 8% 12%, var(--green) 0 5px, transparent 6px),
+      radial-gradient(circle at 92% 18%, var(--pink) 0 4px, transparent 5px),
+      radial-gradient(circle at 18% 55%, var(--blue) 0 5px, transparent 6px),
+      radial-gradient(circle at 80% 70%, var(--yellow) 0 5px, transparent 6px),
+      radial-gradient(circle at 50% 38%, var(--lilac) 0 3px, transparent 4px),
+      radial-gradient(circle at 35% 88%, var(--orange) 0 4px, transparent 5px);
+    background-size: 800px 800px;
+    opacity: 0.55;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.15 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+
+  /* Nav */
+  nav {
+    padding: 14px 0;
+    background: var(--cream);
+    border-bottom: 3px solid var(--ink);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    box-shadow: 0 4px 0 var(--ink);
+  }
+  nav .container { display: flex; justify-content: space-between; align-items: center; }
+  .brand {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .brand-dot {
+    width: 22px; height: 22px;
+    background: var(--green);
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .brand-dot::before, .brand-dot::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    width: 4px; height: 4px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+  .brand-dot::before { left: 3px; }
+  .brand-dot::after { right: 3px; }
+  .nav-links { display: flex; gap: 26px; align-items: center; }
+  .nav-links a {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    position: relative;
+  }
+  .nav-links a:not(.btn)::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 3px;
+    background: var(--green);
+    border-radius: 3px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .2s;
+  }
+  .nav-links a:not(.btn):hover::after { transform: scaleX(1); }
+  @media (max-width: 780px) { .nav-links a:not(.btn) { display: none; } }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: var(--ink);
+    padding: 11px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .12s, box-shadow .12s;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+  .btn.pink { background: var(--pink); }
+  .btn.cream { background: var(--cream); }
+  .btn.dark { background: var(--ink); color: var(--cream); }
+  .btn.yellow { background: var(--yellow); }
+  .btn.lg { padding: 17px 32px; font-size: 17px; box-shadow: 6px 6px 0 var(--ink); }
+  .btn.lg:hover { box-shadow: 3px 3px 0 var(--ink); }
+
+  /* Hero */
+  .hero {
+    padding: 70px 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    position: relative;
+  }
+  @media (max-width: 960px) { .hero { grid-template-columns: 1fr; gap: 60px; padding: 50px 0 20px; text-align: center; } }
+
+  .pump-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--ink);
+    color: #ffe8a3;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 3px solid var(--ink);
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 3px 3px 0 var(--green-2);
+    text-decoration: none;
+    margin-bottom: 24px;
+    letter-spacing: 0.06em;
+  }
+  .pump-badge .dot {
+    width: 9px; height: 9px;
+    background: #00ff88;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00ff88;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  h1 {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: clamp(72px, 11vw, 160px);
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+  h1 .green {
+    color: var(--green-dark);
+    display: inline-block;
+    position: relative;
+  }
+  h1 .green::after {
+    content: "";
+    position: absolute;
+    left: -4px; right: -4px;
+    bottom: 4%;
+    height: 14%;
+    background: var(--yellow);
+    z-index: -1;
+    transform: rotate(-1.5deg);
+    border-radius: 4px;
+  }
+  .scribble {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--pink-2);
+    transform: rotate(-4deg);
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .lede {
+    font-size: 20px;
+    color: #222;
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 960px) { .lede { margin-left: auto; margin-right: auto; } }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  @media (max-width: 960px) { .cta-row { justify-content: center; } }
+
+  /* Image collage */
+  .collage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.02;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .polaroid {
+    position: absolute;
+    background: var(--cream);
+    border: 4px solid var(--ink);
+    border-radius: 18px;
+    padding: 10px 10px 34px;
+    box-shadow: var(--shadow-lg);
+    transition: transform .35s ease;
+  }
+  .polaroid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid var(--ink);
+    display: block;
+    background: var(--green);
+  }
+  .polaroid .cap {
+    position: absolute;
+    bottom: 4px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .p1 { top: 50%; left: 50%; width: 82%; transform: translate(-50%, -50%) rotate(-3deg); z-index: 2; }
+  .p1:hover { transform: translate(-50%, -50%) rotate(-3deg); }
+
+  .sticker {
+    position: absolute;
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    padding: 8px 16px;
+    border-radius: 999px;
+    box-shadow: 3px 3px 0 var(--ink);
+    font-size: 15px;
+    z-index: 4;
+  }
+  .st-hi { top: -10px; right: 8%; background: var(--pink); transform: rotate(10deg); animation: wobble 3s ease-in-out infinite; }
+  .st-one { bottom: 38%; left: -6%; background: var(--yellow); transform: rotate(-12deg); font-size: 14px; }
+  .st-og { top: 48%; right: -4%; background: var(--blue); transform: rotate(6deg); font-size: 13px; }
+
+  .heart {
+    position: absolute;
+    font-size: 30px;
+    z-index: 4;
+  }
+  .heart.h1 { top: 10%; left: -4%; animation: float 4s ease-in-out infinite; }
+  .heart.h2 { bottom: -2%; left: 40%; animation: float 4s ease-in-out infinite .8s; }
+  .heart.h3 { top: 40%; right: -2%; animation: float 4s ease-in-out infinite 1.6s; }
+
+  @keyframes wobble { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(16deg) scale(1.06); } }
+  @keyframes float { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-14px) rotate(8deg); } }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .brand-dot { animation: bob 2.5s ease-in-out infinite; }
+
+  /* Wavy divider */
+  .wave-top, .wave-bot {
+    display: block;
+    width: 100%;
+    height: 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .wave-top { margin-bottom: -1px; }
+  .wave-bot { margin-top: -1px; }
+
+  /* Marquee strip */
+  .strip {
+    background: var(--green-dark);
+    color: var(--cream);
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    padding: 18px 0;
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+    transform: rotate(-1.2deg);
+    margin: 40px -30px;
+  }
+  .strip-track {
+    display: inline-block;
+    animation: scroll 35s linear infinite;
+  }
+  .strip-track span { margin: 0 26px; display: inline-flex; align-items: center; gap: 12px; }
+  .strip-track .dot { color: var(--yellow); font-size: 26px; }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Sections */
+  section { padding: 90px 0; position: relative; }
+  .section-head { max-width: 740px; margin: 0 auto 60px; text-align: center; }
+  .eyebrow {
+    display: inline-block;
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    box-shadow: 3px 3px 0 var(--ink);
+    letter-spacing: 0.05em;
+  }
+  h2 {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+  h2 .green { color: var(--green-dark); }
+  h2 .hl {
+    background: var(--yellow);
+    padding: 0 12px;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    display: inline-block;
+    transform: rotate(-2deg);
+  }
+  .section-head p { color: #2a2a2a; font-size: 17px; }
+
+  /* About */
+  .about-section { background: var(--bg-2); border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr; } }
+  .feature {
+    background: var(--cream);
+    border: 4px solid var(--ink);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: transform .3s ease;
+    position: relative;
+  }
+  .feature:nth-child(1) { transform: rotate(-1.5deg); }
+  .feature:nth-child(2) { background: var(--blue); transform: rotate(1.5deg); }
+  .feature:nth-child(3) { background: var(--pink); transform: rotate(-1deg); }
+  .feature:hover { transform: rotate(0) translateY(-8px) scale(1.02); z-index: 3; }
+  .feature .tag {
+    position: absolute;
+    top: -16px;
+    right: 22px;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+  .feature img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 3px solid var(--ink);
+    margin-bottom: 18px;
+    display: block;
+  }
+  .feature h3 {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .feature p { color: #222; font-size: 15px; font-weight: 500; }
+
+  /* Lore */
+  .lore-section { background: var(--bg); }
+  .lore-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  @media (max-width: 900px) { .lore-grid { grid-template-columns: 1fr; gap: 40px; } }
+  .lore-portrait {
+    background: var(--cream);
+    border: 5px solid var(--ink);
+    border-radius: 28px;
+    padding: 14px 14px 26px;
+    box-shadow: var(--shadow-lg);
+    transform: rotate(-2.5deg);
+    position: relative;
+  }
+  .lore-portrait img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 3px solid var(--ink);
+    display: block;
+  }
+  .lore-portrait .cap {
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 24px;
+    margin-top: 10px;
+  }
+  .lore-portrait .pin {
+    position: absolute;
+    top: -14px;
+    right: 24px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff5b8a, #c11f4e);
+    border: 3px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .lore-copy h3 {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 34px;
+    margin-bottom: 16px;
+    line-height: 1.05;
+  }
+  .lore-copy p {
+    font-size: 17px;
+    color: #1f1f1f;
+    margin-bottom: 14px;
+    max-width: 620px;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+    max-width: 560px;
+  }
+  @media (max-width: 520px) { .facts { grid-template-columns: 1fr; } }
+  .fact {
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 12px 16px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .fact:nth-child(1) { background: var(--bg-4); }
+  .fact:nth-child(2) { background: var(--blue); }
+  .fact:nth-child(3) { background: var(--pink); }
+  .fact:nth-child(4) { background: var(--yellow); }
+  .fact .k {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 2px;
+  }
+  .fact .v {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 17px;
+  }
+
+  /* Gallery — scrapbook wall */
+  .gallery-section {
+    background:
+      repeating-linear-gradient(45deg, transparent 0 24px, rgba(21,21,21,0.025) 24px 48px),
+      var(--bg-3);
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 130px;
+    gap: 28px;
+    padding: 20px 0;
+  }
+  @media (max-width: 900px) { .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; gap: 22px; } }
+
+  .gallery-item {
+    position: relative;
+    background: var(--cream);
+    border: 4px solid var(--ink);
+    border-radius: 14px;
+    padding: 10px 10px 28px;
+    box-shadow: var(--shadow);
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .gallery-item .img-wrap {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    border: 3px solid var(--ink);
+    overflow: hidden;
+    background: var(--green);
+  }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-item .cap {
+    position: absolute;
+    bottom: 4px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 18px;
+    color: #333;
+  }
+  .gallery-item .tape {
+    position: absolute;
+    width: 70px; height: 22px;
+    background: rgba(255, 235, 130, 0.75);
+    border: 1px dashed rgba(0,0,0,0.25);
+    top: -10px; left: 50%;
+    transform: translateX(-50%) rotate(-4deg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .gallery-item .tape.right { left: auto; right: 16px; transform: rotate(12deg); }
+  .gallery-item .tape.left { left: 16px; transform: rotate(-14deg); }
+  .gallery-item .pin {
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff8aa8, #c11f4e);
+    border: 2px solid var(--ink);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+    z-index: 2;
+  }
+  .gallery-item .pin.blue { background: radial-gradient(circle at 30% 30%, #7fd2f0, #1f7fa3); }
+  .gallery-item .pin.green { background: radial-gradient(circle at 30% 30%, #a8e389, #3a8721); }
+  .gallery-item .pin.yellow { background: radial-gradient(circle at 30% 30%, #ffe28a, #c19314); }
+
+  .g1 { grid-column: span 2; grid-row: span 3; transform: rotate(-3deg); }
+  .g2 { grid-column: span 2; grid-row: span 2; transform: rotate(2deg); }
+  .g3 { grid-column: span 2; grid-row: span 2; transform: rotate(-1.5deg); }
+  .g4 { grid-column: span 2; grid-row: span 2; transform: rotate(2.5deg); }
+  .g5 { grid-column: span 2; grid-row: span 3; transform: rotate(-2deg); }
+  .g6 { grid-column: span 2; grid-row: span 2; transform: rotate(1.5deg); }
+  @media (max-width: 900px) {
+    .g1, .g2, .g3, .g4, .g5, .g6 { grid-column: span 1; grid-row: span 1; }
+  }
+  .gallery-item:hover {
+    transform: rotate(0) scale(1.05);
+    box-shadow: 10px 10px 0 var(--ink);
+    z-index: 3;
+  }
+
+  /* Floating sticker decorations on gallery */
+  .gallery-deco {
+    position: absolute;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--green-dark);
+    pointer-events: none;
+  }
+
+  /* Steps */
+  .steps-section { background: var(--bg); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+  }
+  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    background: var(--cream);
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    padding: 28px 22px 26px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    position: relative;
+    transition: transform .25s ease;
+  }
+  .step:hover { transform: translateY(-6px); }
+  .step .num {
+    width: 64px; height: 64px;
+    background: var(--green);
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -54px auto 16px;
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 26px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .step:nth-child(2) .num { background: var(--pink); }
+  .step:nth-child(3) .num { background: var(--blue); }
+  .step:nth-child(4) .num { background: var(--yellow); }
+  .step h4 {
+    font-family: 'Sniglet', cursive;
+    font-weight: 800;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .step p { font-size: 14px; color: #2a2a2a; }
+  .steps-grid-wrap { padding-top: 36px; }
+
+  /* Contract */
+  .contract {
+    background: var(--cream);
+    border: 4px solid var(--ink);
+    border-radius: 28px;
+    padding: 30px;
+    margin-top: 48px;
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 26px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  @media (max-width: 760px) { .contract { grid-template-columns: 1fr; } }
+  .contract .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  .contract code {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 15px;
+    color: var(--ink);
+    word-break: break-all;
+    font-weight: 600;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: block;
+  }
+  .contract-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Big outro CTA */
+  .outro {
+    padding: 80px 0 100px;
+    text-align: center;
+    background: var(--bg-4);
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+  }
+  .outro h2 { margin-bottom: 20px; }
+  .outro p { font-size: 18px; color: #222; margin-bottom: 30px; }
+  .outro .emoji-row { font-size: 40px; margin-bottom: 8px; letter-spacing: 10px; }
+
+  .sparkle { position: absolute; pointer-events: none; font-size: 26px; animation: wobble 2.5s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="brand"><span class="brand-dot"></span> unc doge</a>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#buy">how to buy</a>
+      <a href="https://x.com/uncdoge_x" target="_blank" rel="noopener">X</a>
+      <a href="https://pump.fun/coin/H2zJWDYg6bFnW5UtE13TW7qBZVKuCP1Hmwk3KWN7pump" target="_blank" rel="noopener" class="btn">Buy on pump.fun</a>
+    </div>
+  </div>
+</nav>
+
+<header class="container hero">
+  <div>
+    <a href="https://pump.fun/coin/H2zJWDYg6bFnW5UtE13TW7qBZVKuCP1Hmwk3KWN7pump" target="_blank" rel="noopener" class="pump-badge">
+      <span class="dot"></span> LIVE ON PUMP.FUN · SOLANA
+    </a>
+    <h1>unc <span class="green">doge</span>. <span class="scribble">(yeah, that guy!)</span></h1>
+    <p class="lede">
+      the <strong>very first uncified doge</strong> to ever hop onto pump.fun. a big green guy, a big heart, and the comfiest community on Solana.
+    </p>
+    <div class="cta-row">
+      <a href="https://pump.fun/coin/H2zJWDYg6bFnW5UtE13TW7qBZVKuCP1Hmwk3KWN7pump" target="_blank" rel="noopener" class="btn lg">🚀 Buy on pump.fun</a>
+      <a href="#lore" class="btn lg cream">Who is he?</a>
+    </div>
+  </div>
+  <div class="collage">
+    <div class="polaroid p1">
+      <img src="/meta-images/logo.png" alt="Glep">
+      <div class="cap">the original</div>
+    </div>
+    <div class="sticker st-hi">hi! 👋</div>
+    <div class="sticker st-one">#1 on pump.fun</div>
+    <div class="sticker st-og">✦ the OG ✦</div>
+    <div class="heart h1">💚</div>
+    <div class="heart h2">✨</div>
+    <div class="heart h3">⭐</div>
+  </div>
+</header>
+
+<!-- Wavy divider into marquee -->
+<div class="strip">
+  <div class="strip-track">
+    <span>$GLEP</span><span class="dot">★</span>
+    <span>BUY ON PUMP.FUN</span><span class="dot">★</span>
+    <span>BOLD GREEN GUY</span><span class="dot">★</span>
+    <span>HOP IN</span><span class="dot">★</span>
+    <span>COMMUNITY OWNED</span><span class="dot">★</span>
+    <span>SOLANA</span><span class="dot">★</span>
+    <span>$GLEP</span><span class="dot">★</span>
+    <span>BUY ON PUMP.FUN</span><span class="dot">★</span>
+    <span>BOLD GREEN GUY</span><span class="dot">★</span>
+    <span>HOP IN</span><span class="dot">★</span>
+    <span>COMMUNITY OWNED</span><span class="dot">★</span>
+    <span>SOLANA</span><span class="dot">★</span>
+  </div>
+</div>
+
+<section id="about" class="about-section" style="margin-top: -65px;">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">about unc doge</div>
+      <h2>bold. green. <span class="hl">friendly.</span></h2>
+      <p>say hello to unc doge that becomes the next doge!</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature">
+        <span class="tag">01</span>
+        <img src="/meta-images/logo.png" alt="Glep">
+        <h3>a friendly face</h3>
+        <p>uncdoge is just a bold green guy with feelings. that's the whole pitch — and honestly, it's enough.</p>
+      </div>
+      <div class="feature">
+        <span class="tag">02</span>
+        <img src="/meta-images/logo.png" alt="Glep">
+        <h3>wholesome vibes</h3>
+        <p>no drama, no noise. a community built around a character people genuinely enjoy hanging out with.</p>
+      </div>
+      <div class="feature">
+        <span class="tag">03</span>
+        <img src="/meta-images/logo.png" alt="Glep">
+        <h3>community owned</h3>
+        <p>launched on pump.fun. fair from day one. the token belongs to the people who hold it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="buy" class="steps-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">how to buy</div>
+      <h2>four steps. <span class="hl">that's it.</span></h2>
+      <p>new to solana? no problem. here's the whole thing in under two minutes.</p>
+    </div>
+    <div class="steps-grid-wrap">
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h4>get phantom</h4>
+          <p>install the phantom wallet and back up your seed phrase somewhere safe.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h4>load it with sol</h4>
+          <p>send some solana from your exchange of choice into your phantom wallet.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h4>open pump.fun</h4>
+          <p>head to pump.fun, connect phantom, and paste the unc doge contract below.</p>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <h4>ape in, vibe out</h4>
+          <p>swap sol for $uncdoge and say hi in the community. welcome, friend.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contract">
+      <div>
+        <div class="label">Contract address · Solana</div>
+        <code id="ca">H2zJWDYg6bFnW5UtE13TW7qBZVKuCP1Hmwk3KWN7pump</code>
+      </div>
+      <div class="contract-actions">
+        <button class="btn pink" onclick="copyContract(this)">copy ca</button>
+        <a class="btn dark" href="https://pump.fun/coin/H2zJWDYg6bFnW5UtE13TW7qBZVKuCP1Hmwk3KWN7pump" target="_blank" rel="noopener">pump.fun →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function copyContract(btn) {
+    navigator.clipboard.writeText(document.getElementById('ca').textContent.trim());
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1400);
+  }
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('button, a, input')) return;
+    for (let i = 0; i < 5; i++) {
+      const f = document.createElement('div');
+      f.textContent = ['🐸','✨','💚','⭐'][Math.floor(Math.random()*4)];
+      f.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;font-size:${20+Math.random()*20}px;pointer-events:none;z-index:9999;transition:all .9s ease-out;`;
+      document.body.appendChild(f);
+      requestAnimationFrame(() => {
+        f.style.transform = `translate(${(Math.random()-0.5)*240}px, ${-60 - Math.random()*220}px) rotate(${Math.random()*720}deg)`;
+        f.style.opacity = '0';
+      });
+      setTimeout(() => f.remove(), 900);
+    }
+  });
+</script>
+
+</body>
+</html>
